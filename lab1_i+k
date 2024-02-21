@@ -1,59 +1,76 @@
 #include <iostream>
 #include <cmath>
 using namespace std;
-void square(int k, float len, float *sq);
-void per(int k, float len, float *p);
-void input(int *k, float *len, coordinates *c, int *n);
-void menu(figures *polygon, int *n);
+
+output_coordinates ()
 struct coordinates{
-    float x, y;
+    double x, y;
 };
+
 struct figures{
     int sides;
-    float len;
-    float sq, p;
-    //coordinates *c1=new coordinates[sides];
+    double len;
+    double sq, p;
     coordinates c1[100];
  };
-int main()
-{
-    int choose, n=0;
-    figures polygon[100];
-    input(&polygon.sides, &polygon.len, &polygon.c1, &n);
-    return 0;
-}
-void square(int k, float len, float *sq){
-    *sq=(pow(len,2)*k)/(4*tan(22/(7*k)));
-}
-void per(int k, float len, float *p){
-    *p=s*len;
-}
-void input(int *k, float *len, coordinates *c, int *n){
-    cout<<"Input number of sides"<<endl;
-    cin>>(*k);
-    cout<<"Input length"<<endl;
-    cin>>(*len);
-    cout<<"Input coordinates of the first point"<<endl;
-    cin>>(c->x);
-    cin>>(c->y);
+
+void input(int *k, double *len, coordinates *c, int *n){
+    cout << "Input number of sides" << endl;
+    cin >> (*k);
+    cout << "Input length" << endl;
+    cin >> (*len);
+    cout << "Input coordinates of the first point" << endl;
+    cin >> (c -> x);
+    cin >> (c -> y);
     (*n)++;
 }
+
+/*void delete(){
+    delete polygon
+}
+*/
+
+void square(int k, double len, double *sq){
+    *sq=(pow(len,2)*k)/(4*tan(22/(7*k)));
+}
+
+void per(int k, double len, double *p){
+    *p=k*len;
+}
+
+void vertices (figures *polygon){
+    int R;
+    R = len/(2*sin(pi/sides));
+}
+
+void output(figures *polygon){
+    cout << "Input number of sides" << endl;
+    cout << polygon -> sides << endl;
+    cout << "Input length" << endl;
+    cout << polygon -> len << endl;
+    //cout << "Input coordinates of the first point" << endl;
+    //cout << (c -> x) << endl;
+    //cout << (c -> y) << endl;
+    cout << "p = " << polygon -> p << endl;
+    cout << "s = " << polygon -> sq << endl;
+}
+
 void menu(figures *polygon, int *n){
     int choose;
-    cout<<"Choose your option:"<<endl;
-    cout<<"1-Input new information about a polygon"<<endl;
-    cout<<"2-Look through the information"<<endl;
-    cout<<"3-Delete information about a polygon"<<endl;
-    cout<<"4-Define maximal square or perimetr"<<endl;
-    cout<<"5-Quit"<<endl;
-    cin>>choose;
-    switch(choose){
+    cout << "Choose your option:" << endl;
+    cout << "1 - Input new information about a polygon" << endl;
+    cout << "2 - Look through the information" << endl;
+    cout << "3 - Delete information about a polygon" << endl;
+    cout << "4 - Define maximal square or perimetr" << endl;
+    cout << "5 - Quit" << endl;
+    cin >> choose;
+    switch (choose){
         case 1:
-            input(&polygon->sides, &polygon->len, &polygon->c1, n);
+            input(&polygon -> sides, &polygon -> len, &polygon -> c1, n);
             break;
         case 2:
-            for(int i=0; i<(*n); i++){
-                cout<<
+            for(int i = 0; i < (*n); i++){
+                output(&polygon[i]);
             }
             break;
         case 3:
@@ -63,12 +80,30 @@ void menu(figures *polygon, int *n){
 
             break;
         case 5:
+            cout << "1 - exit" << "\t" << "2 - continue" << endl;
+            int choose_ex;
+            cin >> choose_ex;
+            switch (choose_ex){
+                case 1:
+
+                    break;
+                case 2:
+
+                    break;
+            }
 
             break;
         default:
             cout<<"Error. Try again."
             break;
-
     }
-
 }
+
+int main()
+{
+    int choose, n=0;
+    figures polygon[100];
+    input(&polygon.sides, &polygon.len, &polygon.c1, &n);
+    return 0;
+}
+
