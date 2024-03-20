@@ -17,19 +17,20 @@ struct figures{
 };
 
 void realloc(figures *polygon, int *n){
-    figures *pol1 = new figures[*n + 1];
-    for(int i = 0; i < *n; i++){
+    figures *pol1 = new figures[(*n)];
+    for(int i = 0; i < (*n); i++){
         pol1[i] = polygon[i];
     }
-    delete [] polygon;
-    polygon = new figures[*n];
-    polygon = pol1;
-    (*n)++;
+    polygon = new figures[(*n)];
+    for(int i = 0; i < (*n); i++){
+        polygon[i]=pol1[i];
+    }
+    pol1 = new figures[1];
 }
 
 void square(figures *polygon){
     (polygon -> sq) = ((double)(polygon -> sides))*pow((polygon -> len), 2)/(4*tan(22/(7*((double)(polygon -> sides)))));
-    cout << "polygon " << polygon << " square " << polygon -> sq<< endl;
+    cout << "polygon " << polygon << " square " << polygon -> sq  << endl;
 }
 
 void per(figures *polygon){
@@ -38,8 +39,9 @@ void per(figures *polygon){
 }
 
 void input(figures *polygon, int *n){
-    (*n)++;
-    realloc(polygon, *n);
+    if((*n)!=1){
+            (*n)++;
+            realloc(polygon, n);}
     cout << "input number of sides" << endl;
     cin >> (polygon[(*n) - 1].sides);
     if (polygon[(*n) - 1].sides <= 2){
@@ -54,11 +56,19 @@ void input(figures *polygon, int *n){
     }
 }
 
-void output(figures *polygon){
+/*void output(figures *polygon){
     cout << "number of sides: " << (polygon -> sides) << endl;
     cout << "length of sides: " << (polygon -> len) << endl;
     cout << "p = " << (polygon -> p) << endl;
     cout << "s = " << (polygon -> sq) << endl;
+}*/
+void output(figures *polygon, int n){
+    for(int i=0; i<n; i++)
+    {cout << "number of sides: " << (polygon[i].sides) << endl;
+    cout << "length of sides: " << (polygon[i].len) << endl;
+    cout << "p = " << (polygon[i].p) << endl;
+    cout << "s = " << (polygon[i].sq) << endl;
+}
 }
 
 void outputcoord(figures *polygon){
@@ -86,11 +96,10 @@ void maxper(figures *polygon, int *n){
 void maxsquare(figures *polygon, int *n){
     double maxsq = 0.0;
     for(int i = 0; i < *n; i++){
-        double sq = (double)square(&polygon[i]);
-        if(sq > maxsq){
-            maxsq = sq;
+        if(maxsq - (polygon[i].sq) < 0){
+            maxsq = (polygon[i].sq);
         }
-    }
+}
     cout << "polygons maximal square:" << endl;
     for(int j = 0; j < (*n); j++){
         if(polygon[j].sq == maxsq){
@@ -99,24 +108,24 @@ void maxsquare(figures *polygon, int *n){
     }
 }
 
-void coord(figures *polygon){ 
-    cout << "input coordinates first point" << endl; 
-    cin >> (polygon->c1[0].x); 
-    cin >> (polygon->c1[0].y); 
-    double x0, y0, phi, R, a, at; 
-    R = (polygon -> len)/(2*sin(22/(7*(polygon -> sides)))); 
-    phi = atan((polygon -> c1[0].y)/(polygon -> c1[0].x)); 
+void coord(figures *polygon){
+    cout << "input coordinates first point" << endl;
+    cin >> (polygon->c1[0].x);
+    cin >> (polygon->c1[0].y);
+    double x0, y0, phi, R, a, at;
+    R = (polygon -> len)/(2*sin(22/(7*(polygon -> sides))));
+    phi = atan((polygon -> c1[0].y)/(polygon -> c1[0].x));
     x0 = (polygon -> c1[0].x) - (polygon -> len)*cos(phi);
-    y0 = (polygon -> c1[0].y) - (polygon -> len)*sin(phi); 
-    a = sqrt(pow(x0,2) + pow(y0,2)); 
-    for (int i = 1; i < (polygon -> sides); i++){ 
-        (polygon -> c1[i].x) = x0 + R*cos(phi + 44/7*i/(polygon -> sides)); 
-        (polygon -> c1[i].y) = y0 + R*sin(phi + 44/7*i/(polygon -> sides)); 
-        at = sqrt(pow((polygon -> c1[i].x),2) + pow((polygon -> c1[i].y),2)); 
-        if(at > a){ 
-            cout << "error!!" << endl; 
-        } 
-    } 
+    y0 = (polygon -> c1[0].y) - (polygon -> len)*sin(phi);
+    a = sqrt(pow(x0,2) + pow(y0,2));
+    for (int i = 1; i < (polygon -> sides); i++){
+        (polygon -> c1[i].x) = x0 + R*cos(phi + 44/7*i/(polygon -> sides));
+        (polygon -> c1[i].y) = y0 + R*sin(phi + 44/7*i/(polygon -> sides));
+        at = sqrt(pow((polygon -> c1[i].x),2) + pow((polygon -> c1[i].y),2));
+        if(at > a){
+            cout << "error!!" << endl;
+        }
+    }
 }
 
 void newpage(){
@@ -145,23 +154,24 @@ int main()
     int n = 1;
     figures *polygon = new figures[1];
     int choose, it = 1;
+    while(it == 1){
     cout << "choose your option:" << endl;
     cout << "1 - input new information about a polygon" << endl;
     cout << "2 - look through the information" << endl;
     cout << "3 - delete information about a polygon" << endl;
     cout << "4 - define maximal square or perimetr" << endl;
     cout << "5 - quit" << endl;
-    while(it == 1){
-            cin >> choose;
+    cin >> choose;
     newpage();
     switch(choose){
     case 1:
         input(polygon, &n);
         break;
     case 2:
-        for(int i = 0; i < n; i++){
+        /*for(int i = 0; i < n; i++){
                 output(&polygon[i]);
-        }
+        }*/
+        output(polygon, n);
         break;
     case 3:
         deletefigure(polygon, n);
