@@ -16,16 +16,13 @@ struct figures{
     coordinates c1[100];
 };
 
-void realloc(figures *polygon, int *n){
-    figures *pol1 = new figures[(*n)];
-    for(int i = 0; i < (*n); i++){
+void realloc(figures *&polygon, int &n){
+    figures *pol1 = new figures[n];
+    for (int i = 0; i < n - 1; i++) {
         pol1[i] = polygon[i];
     }
-    polygon = new figures[(*n)];
-    for(int i = 0; i < (*n); i++){
-        polygon[i]=pol1[i];
-    }
-    pol1 = new figures[1];
+    delete[] polygon;
+    polygon = pol1;
 }
 
 void square(figures *polygon){
@@ -38,37 +35,31 @@ void per(figures *polygon){
     cout << "polygon " << polygon << " per " << polygon -> p << endl;
 }
 
-void input(figures *polygon, int *n){
-    if((*n)!=1){
-            (*n)++;
-            realloc(polygon, n);}
+void input(figures *&polygon, int &n){
+    n++;
+    realloc(polygon, n);
     cout << "input number of sides" << endl;
-    cin >> (polygon[(*n) - 1].sides);
-    if (polygon[(*n) - 1].sides <= 2){
+    cin >> (polygon[n - 1].sides);
+    if (polygon[n - 1].sides <= 2){
         cout << "error!" << endl;
     }
     else{
         cout << "input length" << endl;
-        cin >> (polygon[(*n) - 1].len);
-        per(&polygon[(*n) - 1]);
-        square(&polygon[(*n) - 1]);
+        cin >> (polygon[n - 1].len);
+        per(&polygon[n - 1]);
+        square(&polygon[n - 1]);
         cout << "so good" << endl;
     }
 }
 
-/*void output(figures *polygon){
-    cout << "number of sides: " << (polygon -> sides) << endl;
-    cout << "length of sides: " << (polygon -> len) << endl;
-    cout << "p = " << (polygon -> p) << endl;
-    cout << "s = " << (polygon -> sq) << endl;
-}*/
 void output(figures *polygon, int n){
-    for(int i=0; i<n; i++)
-    {cout << "number of sides: " << (polygon[i].sides) << endl;
-    cout << "length of sides: " << (polygon[i].len) << endl;
-    cout << "p = " << (polygon[i].p) << endl;
-    cout << "s = " << (polygon[i].sq) << endl;
-}
+    for(int i = 0; i < n; i++){
+        cout << i << endl;
+        cout << "number of sides: " << (polygon[i].sides) << endl;
+        cout << "length of sides: " << (polygon[i].len) << endl;
+        cout << "p = " << (polygon[i].p) << endl;
+        cout << "s = " << (polygon[i].sq) << endl;
+    }
 }
 
 void outputcoord(figures *polygon){
@@ -110,8 +101,8 @@ void maxsquare(figures *polygon, int *n){
 
 void coord(figures *polygon){
     cout << "input coordinates first point" << endl;
-    cin >> (polygon->c1[0].x);
-    cin >> (polygon->c1[0].y);
+    cin >> (polygon -> c1[0].x);
+    cin >> (polygon -> c1[0].y);
     double x0, y0, phi, R, a, at;
     R = (polygon -> len)/(2*sin(22/(7*(polygon -> sides))));
     phi = atan((polygon -> c1[0].y)/(polygon -> c1[0].x));
@@ -134,7 +125,8 @@ void newpage(){
     }
 }
 
-void deletefigure(figures *polygon, int &n) {
+void deletefigure(figures *polygon, int &n) 
+{
     cout << "input number of polygon to delete" << endl;
     int num;
     cin >> num;
@@ -148,11 +140,11 @@ void deletefigure(figures *polygon, int &n) {
     }
 }
 
-
 int main()
 {
-    int n = 1;
+    int n = 0;
     figures *polygon = new figures[1];
+    
     int choose, it = 1;
     while(it == 1){
     cout << "choose your option:" << endl;
@@ -165,12 +157,9 @@ int main()
     newpage();
     switch(choose){
     case 1:
-        input(polygon, &n);
+        input(polygon, n);
         break;
     case 2:
-        /*for(int i = 0; i < n; i++){
-                output(&polygon[i]);
-        }*/
         output(polygon, n);
         break;
     case 3:
@@ -201,25 +190,25 @@ int main()
                 break;
         }
         break;
-        case 5:
-            cout << "are you sure? (1 - yes, 2 - no)" << endl;
-            int choose1;
-            cin >> choose1;
-            newpage();
-            switch(choose1){
-                case 1:
-                    cout << "bye!" << endl;
-                    delete [] polygon;
-                    newpage();
-                    it = 0;
-                    break;
-                case 2:
-                    it = 1;
-                    break;
-                default:
-                    cout << "error!!" << endl;
-                    break;
-            }
+    case 5:
+        cout << "are you sure? (1 - yes, 2 - no)" << endl;
+        int choose1;
+        cin >> choose1;
+        newpage();
+        switch(choose1){
+            case 1:
+                cout << "bye!" << endl;
+                delete [] polygon;
+                newpage();
+                it = 0;
+                break;
+            case 2:
+                it = 1;
+                break;
+            default:
+                cout << "error!!" << endl;
+                break;
+        }
             break;
         default:
         cout << "error!!" << endl;
