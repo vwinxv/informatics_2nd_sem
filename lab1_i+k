@@ -54,31 +54,34 @@ void per(figures *polygon){
     cout << "polygon " << polygon << " per " << polygon -> p << endl;
 }
 
-void input(figures *&polygon, int &n){
+void input(figures*& polygon, int& n) {
     n++;
     realloc(polygon, n);
     cout << "input number of sides" << endl;
-    polygon -> sides = getInput();
-    if (polygon -> sides <= 2){
-        cout << "error!" << endl;
+    while(true){
+    polygon[n-1].sides = getInput();
+    if (polygon->sides <= 2) {
+        cout << "error! input number" << endl;
     }
     else{
-        cout << "input length" << endl;
-        polygon -> len = getInput();
-        per(&polygon[n - 1]);
-        square(&polygon[n - 1]);
-        cout << "so good" << endl;
-        cout << "input coordinates first point" << endl;
-        polygon[n - 1].c1 -> x = getInput();
-        polygon[n - 1].c1 -> y = getInput();
-        double c_y = 0;
-        double R = fabs((polygon[n - 1].len)/(2*sin(M_PI/polygon[n - 1].sides)));
-        if((sqrt(pow(polygon[n - 1].c1 -> x,double(2)) + pow(polygon[n - 1].c1 -> y,double(2))) - R) < 0){
-            cout << "error coordinate\n";
-            c_y = sqrt(pow(R, double(2))-pow(polygon[n - 1].c1 -> x, double(2)));
-            cout << "with this x, the y must modulo more than\n" << c_y << "\n";
-            input(polygon, n);
-        }
+        break; 
+    }
+    }
+    cout << "input length" << endl;
+    polygon[n-1].len = getInput();
+    per(&polygon[n - 1]);
+    square(&polygon[n - 1]);
+    cout << "so good" << endl;
+    cout << "input coordinates first point" << endl;
+    polygon[n - 1].c1->x = getInput();
+    polygon[n - 1].c1->y = getInput();
+    double c_y = 0;
+    double R = fabs((polygon[n - 1].len) / (2 * sin(M_PI / polygon[n - 1].sides)));
+    if ((sqrt(pow(polygon[n - 1].c1->x, double(2)) + pow(polygon[n - 1].c1->y, double(2))) - R) < 0) {
+        cout << "error coordinate\n";
+        c_y = sqrt(pow(R, double(2)) - pow(polygon[n - 1].c1->x, double(2)));
+        cout << "with this x, the y must modulo more than\n" << c_y << "\n";
+        input(polygon, n);
     }
 }
 
@@ -210,7 +213,7 @@ int main()
     case 5:
         cout << "are you sure? (1 - yes, 2 - no)" << endl;
         int choose1;
-        cin >> choose1;
+        choose1 = getInput();
         newpage();
         switch(choose1){
             case 1:
