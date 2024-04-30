@@ -1,0 +1,98 @@
+#include <iostream>
+#include <locale.h> 
+#include <string>
+
+using namespace std;
+
+class TransportVehicle {
+private:
+	int count;//Kolcol;
+	double mileage;
+	int tank_capacity;
+	double engine;//Engine_power;
+	double time;//Travel_time;
+	string title;
+	double speed;
+	double eat;
+
+public:
+
+	void set_count(int wheels) {
+		count = wheels;
+	}
+
+	int get_count() {
+		return count;
+	}
+
+	void set_mileage(double mMileage) {
+		mileage = mMileage;
+	}
+
+	double get_mileage() {
+		return mileage;
+	}
+
+	void set_tank_capacity(int capacity) {
+		tank_capacity = capacity;
+	}
+
+	int get_tank_capacity() {
+		return tank_capacity;
+	}
+
+	void set_title(string name_of_car) {
+		title = name_of_car;
+	}
+
+	string get_title() {
+		return title;
+	}
+
+	void set_engine(double power) {
+		engine = power;
+	}
+
+	double get_engine() {
+		return engine;
+	}
+
+	void set_time(double ttime) {
+		time = ttime;
+	}
+
+	double get_time() {
+		return time;
+	}
+
+	void set_speed(double v) {
+		speed = v;
+	}
+
+	double get_Speed() {
+		return speed;
+	}
+
+	void set_eat(double eat_engine) {
+		eat = eat_engine;
+	}
+
+	double get_eat() {
+		return eat;
+	}
+
+};
+
+int main() {
+	TransportVehicle car;
+	string name;
+	int count;
+	double mileage;
+	int tank;
+	double engine;
+	double time;
+	double speed;
+	double eat;
+
+	return 0;
+}
