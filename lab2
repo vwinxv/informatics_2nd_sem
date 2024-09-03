@@ -1,98 +1,247 @@
 #include <iostream>
-#include <locale.h> 
-#include <string>
+#include <cmath>
 
 using namespace std;
 
-class TransportVehicle {
-private:
-	int count;//Kolcol;
-	double mileage;
-	int tank_capacity;
-	double engine;//Engine_power;
-	double time;//Travel_time;
-	string title;
-	double speed;
-	double eat;
+class Vehicle{
+    double count_speed(double power, int tyres, double v);
+    void count_con(double power);
+
 
 public:
+    int tyres, refuel;
+    double speed;
+    double time1, power, con;
+    double v;
+    int count_ref(double v, double con, double tr);
+    char name[100];
+    void count_time(double tr, double speed);
 
-	void set_count(int wheels) {
-		count = wheels;
-	}
+    Vehicle(int t_tyres, double t_v, double t_power){
+        tyres = t_tyres;
+        v = t_v;
+        power = t_power;
+        count_con(power);
+        speed = count_speed(power,tyres,v);
+        time1 = 0;
+    }
 
-	int get_count() {
-		return count;
-	}
+    Vehicle(){v = tyres = power = time1 = 0;}
 
-	void set_mileage(double mMileage) {
-		mileage = mMileage;
-	}
+    ~Vehicle(){
+        cout<<"Vehicle has been deleted!"<<endl;
+    }
 
-	double get_mileage() {
-		return mileage;
-	}
-
-	void set_tank_capacity(int capacity) {
-		tank_capacity = capacity;
-	}
-
-	int get_tank_capacity() {
-		return tank_capacity;
-	}
-
-	void set_title(string name_of_car) {
-		title = name_of_car;
-	}
-
-	string get_title() {
-		return title;
-	}
-
-	void set_engine(double power) {
-		engine = power;
-	}
-
-	double get_engine() {
-		return engine;
-	}
-
-	void set_time(double ttime) {
-		time = ttime;
-	}
-
-	double get_time() {
-		return time;
-	}
-
-	void set_speed(double v) {
-		speed = v;
-	}
-
-	double get_Speed() {
-		return speed;
-	}
-
-	void set_eat(double eat_engine) {
-		eat = eat_engine;
-	}
-
-	double get_eat() {
-		return eat;
-	}
-
+    void output(int n);
 };
 
-int main() {
-	TransportVehicle car;
-	string name;
-	int count;
-	double mileage;
-	int tank;
-	double engine;
-	double time;
-	double speed;
-	double eat;
+void Vehicle::count_con(double power){
+    con = (0.649)*power;
+}
 
-	return 0;
+void Vehicle::output(int n){
+cout << n << endl;
+cout << "Name: " << name << endl;
+cout << "Tyres: " << tyres << endl;
+cout << "Capacity: " << v << endl;
+cout << "Power: " << power<< endl;
+cout << "Speed: " << speed << endl;
+cout << "Consumption: " << con << endl;
+}
+
+double Vehicle::count_speed(double power, int tyres, double v){
+double speed;
+speed = power/(0.730*v*10*(double)tyres);
+return speed;
+}
+
+void Vehicle::count_time(double tr, double speed){
+    time1 = tr/speed;
+}
+
+int Vehicle::count_ref(double v, double con, double tr){
+    int n;
+    double n1;
+    n1 = tr/(v/(con/100));
+    n=round(n1);
+    if((n - n1) > 0){
+        n = n-1;
+    }
+    return n;
+}
+
+void menu(Vehicle *car);
+Vehicle input();
+double checkchar1();
+
+int main()
+{
+ Vehicle car[10];
+ menu(car);
+ return 0;
+
+}
+Vehicle input(){
+    int t_tyres;
+    double t_v;
+    double t_power;
+    cout << "Input number of tyres" << endl;
+    t_tyres = (int)checkchar1();
+    cout << "Input capacity" << endl;
+    t_v = checkchar1();
+    cout << "Input power" << endl;
+    t_power = checkchar1();
+    cout << "Input name" << endl;
+    Vehicle car(t_tyres, t_v, t_power);
+    cin >> car.name;
+    return car;
+}
+
+void trace_results(Vehicle *car, int n){
+    Vehicle tmp[n];
+    Vehicle tm;
+    for(int k = 0; k < (n); k++){
+    tmp[k] = car[k];
+    }
+    for(int i = 0; i < (n); i++){
+        for(int j = (n-1); j > i; j--){
+            if(tmp[i].time1-tmp[j].time1 > 0){
+                tm = tmp[i];
+                tmp[i] = tmp[j];
+                tmp[j] = tm;
+            }
+            else if(tmp[i].time1 == tmp[j].time1){
+                if(tmp[i].refuel > tmp[j].refuel){
+                    tm = tmp[i];
+                    tmp[i] = tmp[j];
+                    tmp[j] = tm;
+                }
+            }
+        }
+    }
+    cout << "Results:" << endl;
+    for(int r = 0; r < (n); r++){
+        cout << (r) << "." << tmp[r].name << endl;
+        cout << " time: ";
+        cout << ((int)(tmp[r].time1)/3600) << " hours, " << (((int)(tmp[r].time1)%3600)/60) << " minutes, "<< (tmp[r].time1) - (((int)(tmp[r].time1)/3600)*3600 + (((int)(tmp[r].time1)%3600)/60)*60) << " seconds" << endl;
+        cout << "refuel times: " << tmp[r].refuel << endl;
+    }
+}
+
+void newpage(){
+    int a;
+    cout << "Press enter to continue" << endl;
+    cin.get();
+    for(int i = 0; i < 120; i++){
+        cout << endl;
+    }
+}
+
+void menu(Vehicle *car){
+int choose, it = 1, n = 0;
+double tr = 0;
+    while(it == 1){
+            cout << "Choose your option:" << endl;
+            cout << "1-Input new information about vehicles" << endl;
+            cout << "2-Look through the information" << endl;
+            cout << "3-Input trace length" << endl;
+            cout << "4-Count trace" << endl;
+            cout << "5-Output results" << endl;
+            cout << "6-Quit" << endl;
+            choose = checkchar1();
+    newpage();
+    switch(choose){
+    case 1:
+            car[n] = input();
+            n++;
+        break;
+        case 2:
+            if(n == 0){
+                cout << "Empty" << endl;
+            }
+            else{
+                for(int i = 0; i < (n); i++){
+                car[i].output(i);
+			    }
+            }
+            break;
+            case 3:
+                cout << "Input trace len" << endl;
+                tr = checkchar1();
+                cout << "Trace length is " << tr << endl;
+                break;
+                case 4:
+                if(n == 0){
+                    cout << "Empty" << endl;
+                }
+                else{
+                if(tr == 0){
+                    cout << "Wouldn't you like to input trace length first?" << endl;
+                    cin >> tr;
+                }
+                for(int i = 0; i < (n); i++){
+                    car[i].count_time(tr, car[i].speed);
+                    car[i].refuel = car[i].count_ref(car[i].v, car[i].con, tr);
+                }
+                cout << "Success" << endl;
+                }
+                break;
+                case 5:
+                    if(n == 0){
+                        cout << "Empty" << endl;
+                    }
+                    else{
+                    if(car[0].time1 == 0){
+                        cout << "You should have counted time first. I am doing it myself." << endl;
+                    if(tr == 0){
+                    cout << "Wouldn't you like to input trace length first?" << endl;
+                    cin >> tr;
+                    }
+                    for(int i = 0; i < (n); i++){
+                        car[i].count_time(tr, car[i].speed);
+                        car[i].refuel = car[i].count_ref(car[i].v, car[i].con, tr);
+                    }
+                    }
+                     trace_results(car, n);
+                    }
+                    break;
+                case 6:
+                    cout << "Are you sure? (1-yes, 2-no)" << endl;
+                    int choose1;
+                    choose1 = checkchar1();
+                    newpage();
+                    switch(choose1){
+                        case 1:
+                            cout << "The end" << endl;
+                            newpage();
+                            it = 0;
+                            break;
+                            case 2:
+                                it = 1;
+                                break;
+                                default:
+                                    cout << "Error" << endl;
+                                    break;
+                                    }
+                                    break;
+                                    default:
+                                        cout << "Error. Try again." << endl;
+                                        break;
+                                        }
+                                        newpage();
+    }
+}
+double checkchar1(){
+    double i;
+    while (true) {
+        cin >>  i;
+        if (!cin||(i <= 0)){
+            cin.clear();
+            while (cin.get() != '\n');
+            cout << "Error! Try again."<<endl;
+            cout << "Enter the number: " << endl;
+        }
+        else break;
+    }
+    return i;
 }
