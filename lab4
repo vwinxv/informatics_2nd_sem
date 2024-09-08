@@ -214,28 +214,22 @@ void count_time(double tr, Vehicle &car, bool *f, double *tmp_tr, int *n_fin, in
 
 void menu(vector <Vehicle> car);
 
-//void input(vector <Vehicle> &car);
-void input(vector <Vehicle> &car){
-    int t_tyres;
-    double t_v;
-    double t_power;
-    cout << "Input number of tyres" << endl;
-    t_tyres = (int)checkchar1();
-    cout << "Input capacity" << endl;
-    t_v = checkchar1();
-    cout << "Input power" << endl;
-    t_power = checkchar1();
-    cout << "Input name" << endl;
-    Vehicle car1(t_tyres, t_v, t_power);
-    cin >> car1.name;
-    if(car[0].tyres == 0){
-        car[0] = car1;
-    }
-    else{
-    car.push_back(car1);}
-}
+void input(vector <Vehicle> &car);
 
-double checkchar1();
+double checkchar1(){
+    double i;
+    while (true) {
+        cin >> i;
+        if (!cin || (i <= 0)){
+            cin.clear();
+            while (cin.get() != '\n');
+            cout << "Error! Try again." << endl;
+            cout << "Enter the number: " << endl;
+        }
+        else break;
+    }
+    return i;
+}
 
 int main(){
  vector <Vehicle> car(1);
@@ -243,7 +237,7 @@ int main(){
  return 0;
 }
 
-/*void input(vector <Vehicle> &car){
+void input(vector <Vehicle> &car){
     int t_tyres;
  double t_v;
  double t_power;
@@ -261,7 +255,7 @@ int main(){
  }
  else{
  car.push_back(car1);}
-}*/
+}
 void trace_results(vector <Vehicle> car, int n){
     Vehicle tmp[n];
     Vehicle tm;
@@ -412,19 +406,4 @@ while(it == 1){
         }
         newpage();
     }
-}
-
-double checkchar1(){
-    double i;
-    while (true) {
-        cin >> i;
-        if (!cin || (i <= 0)){
-            cin.clear();
-            while (cin.get() != '\n');
-            cout << "Error! Try again." << endl;
-            cout << "Enter the number: " << endl;
-        }
-        else break;
-    }
-    return i;
 }
