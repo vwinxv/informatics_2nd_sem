@@ -1,272 +1,347 @@
 #include <iostream>
-#include <cmath>
-#include <string>
-#include <sstream>
-
+#include <math.h>
 using namespace std;
-
-struct coordinates{
-    double x;
-    double y;
+struct polygon
+{
+  double lenght_side;
+  int amount_angles;
+  double P;
+  double S;
+  double x1;
+  double y1;
 };
 
-struct figures{
-    int sides;
-    double len;
-    double sq;
-    double p;
-    coordinates c1[100];
-};
-
-int getInput(){   
-    int number;
-    string userInput;
-    while (true) {
-        getline(cin, userInput);
-        stringstream ss(userInput);
-
-        if (ss >> number) {
-            break;
-        }
-        else {
-            cout << "error! input number " << endl;
-        }
-    }
-    return number;
-}
-
-void realloc(figures *&polygon, int &n){
-    figures *pol1 = new figures[n];
-    for (int i = 0; i < n - 1; i++) {
-        pol1[i] = polygon[i];
-    }
-    delete[] polygon;
-    polygon = pol1;
-}
-
-void square(figures *polygon){
-    (polygon -> sq) = ((double)(polygon -> sides))*pow((polygon -> len), 2)/(4*tan(M_PI/((double)(polygon -> sides))));
-    cout << "polygon " << polygon << " square " << polygon -> sq  << endl;
-}
-
-void per(figures *polygon){
-    (polygon -> p) = (polygon -> sides)*(polygon -> len);
-    cout << "polygon " << polygon << " per " << polygon -> p << endl;
-}
-
-void input(figures*& polygon, int& n) {
-    n++;
-    realloc(polygon, n);
-    cout << "input number of sides" << endl;
-    while(true){
-    polygon[n-1].sides = getInput();
-    if (polygon->sides <= 2) {
-        cout << "error! input number" << endl;
-    }
-    else{
-        break; 
-    }
-    }
-    cout << "input length" << endl;
-    polygon[n-1].len = getInput();
-    per(&polygon[n - 1]);
-    square(&polygon[n - 1]);
-    cout << "so good" << endl;
-    cout << "input coordinates first point" << endl;
-    polygon[n - 1].c1->x = getInput();
-    polygon[n - 1].c1->y = getInput();
-    double c_y = 0;
-    double R = fabs((polygon[n - 1].len) / (2 * sin(M_PI / polygon[n - 1].sides)));
-    if ((sqrt(pow(polygon[n - 1].c1->x, double(2)) + pow(polygon[n - 1].c1->y, double(2))) - R) < 0) {
-        cout << "error coordinate\n";
-        c_y = sqrt(pow(R, double(2)) - pow(polygon[n - 1].c1->x, double(2)));
-        cout << "with this x, the y must modulo more than\n" << c_y << "\n";
-        input(polygon, n);
-    }
-}
-
-void maxPerSq(figures *polygon, int *n, int a){
-    double maxper = 0, maxsq = 0.0;
-    if(a == 1){
-        for(int i = 0; i < (*n); i++){
-            if((maxper - (polygon[i].p)) < 0){
-                maxper = (polygon[i].p);
-            }
-        }
-        cout << "polygons maximal perimetr:" << endl;
-        for(int j = 0; j < (*n); j++){
-            if(polygon[j].p == maxper){
-                cout << j <<endl;
-            }
-        }
-    }
-    if(a == 2){
-        for(int i = 0; i < *n; i++){
-            if(maxsq - (polygon[i].sq) < 0){
-                maxsq = (polygon[i].sq);
-            }
-        }
-        cout << "polygons maximal square:" << endl;
-        for(int j = 0; j < (*n); j++){
-            if(polygon[j].sq == maxsq){
-                cout << j << endl;
-            }
-        }
-    }
-}
-
-void output(figures *polygon, int n){
-    if(n == 0){
-        cout << "no information about polygon" << endl;
-    }
-    else{
-        for(int i = 0; i < n; i++){
-            cout << i + 1 << endl;
-            cout << "number of sides: " << (polygon[i].sides) << endl;
-            cout << "length of sides: " << (polygon[i].len) << endl;
-            cout << "p = " << (polygon[i].p) << endl;
-            cout << "s = " << (polygon[i].sq) << endl;
-            double x0, y0, phi, R;
-            int flagx = 1;
-            int flagy = 1;
-            if(polygon[i].c1 -> x < 0){flagx = -1;}
-            if(polygon[i].c1 -> y < 0){flagy = -1;}
-            double modx = fabs(polygon[i].c1 -> x);
-            double mody = fabs(polygon[i].c1 -> y);
-            R = fabs((polygon[i].len)/(2*sin(M_PI/polygon[i].sides)));
-            cout << "R = " << R << endl;
-            phi = atan(mody/modx);
-            x0 = modx - (R)*cos(phi);
-            y0 = mody - (R)*sin(phi);
-            double angle = (2*M_PI)/polygon[i].sides;
-            cout << "coordinates: " << i + 1 << "\n";
-            cout << "vertex 1: " << polygon[i].c1 -> x << ";" << polygon[i].c1 -> y << "\n";
-            for(int j = 1; j < polygon[i].sides; j++){
-                if(flagx != flagy){
-                    double NewAngle = phi - (j)*angle;
-                    double Next_X = x0 + R*cos(NewAngle);
-                    double Next_Y = y0 + R*sin(NewAngle);
-                    cout << "vertex" << j + 1 << ": " << Next_X*flagx << ";" << Next_Y*flagy << "\n";
-                }
-                else{
-                    double NewAngle = phi + (j)*angle;
-                    double Next_X = x0 + R*cos(NewAngle);
-                    double Next_Y = y0 + R*sin(NewAngle);
-                    cout << "vertex" << j + 1 << ": " << Next_X*flagx << ";" << Next_Y*flagy << "\n";
-                }
-            }
-        }
-    }
-}
-
-void newpage(){
-    for(int i = 0; i < 100; i++){
-        cout << "\n";
-    }
-}
-
-void deletefigure(figures *polygon, int &n)
+void ignoreLine()
 {
-    cout << "input number of polygon to delete" << endl;
-    int num;
-    num = getInput();
-    if (num >= n) {
-        cout << "error!!" << endl;
-    } else {
-        for (int i = num + 1; i < n; i++) {
-            polygon[i - 1] = polygon[i];
+    cin.clear();
+    cin.ignore();
+}
+
+void input_coordinates(int current,int amount_polygons,polygon *p_polygon){
+   double polarR=0;
+    for(int i = amount_polygons - 1; i < amount_polygons; ++i){
+        double Radius = p_polygon[i].lenght_side / (2*sin(M_PI/p_polygon[i].amount_angles));
+        cout << "\n" << "Polygon number:" << i + 1 << "\n";
+        cout << "Enter coordinate x of the farest polygon vertex";
+        cin >> p_polygon[amount_polygons - 1].x1;
+        while(cin.fail()) {
+            ignoreLine();
+            cout << "You have entered a character, please enter a number" << endl;
+            cin >> p_polygon[amount_polygons - 1].x1;
         }
-        n--;
+        double ang = acos(p_polygon[i].x1/Radius);
+        double y = Radius*sin(ang);
+        polarR = ((p_polygon[i].y1*p_polygon[i].y1) + (p_polygon[i].x1*p_polygon[i].x1));
+        do{
+            cout << "Enter coordinate y of the farest polygon vertex" << "  ";
+            cout << "Y must be more than  " << y << "\n";
+            cin >> p_polygon[amount_polygons - 1].y1;
+            polarR = ((p_polygon[i].y1*p_polygon[i].y1) + (p_polygon[i].x1*p_polygon[i].x1));
+        }
+        while(Radius - polarR > 0);
+        while (cin.fail()){
+            ignoreLine();
+            cout << "You have entered a character, please enter a number" << endl;
+            cin >> p_polygon[amount_polygons - 1].y1;
+        }
+        if((sqrt(pow(p_polygon[i].x1, 2) + pow(p_polygon[i].y1, 2)) - Radius) < 0){
+            cout << "Error coordinate\n";
+            input_coordinates(current, amount_polygons, p_polygon);
+        }
     }
 }
 
-void menu2(figures *polygon, int n);
+void input(int current,int &amount_polygons,polygon *&p_polygon) {
+    amount_polygons++;
+    polygon *new_p_polygon = new polygon[amount_polygons];
+    for(int i = 0; i < amount_polygons - 1; ++i){
+        new_p_polygon[i] = p_polygon[i];
+    }
+    delete p_polygon;
+    p_polygon = new_p_polygon;
+    for(int i = amount_polygons - 1; i < amount_polygons; i++){
+        cout << "Polygon  " << i + 1 << "\n";
+        cout << "Enter lenght of side";
+        do{
+            cin >> p_polygon[i].lenght_side;
+            while (cin.fail()){
+            ignoreLine();
+            cout << "You have entered a character, please enter a number" << endl;
+            cin >> p_polygon[i].lenght_side;
+            }
+            if(p_polygon[i].lenght_side < 0){
+                cout << "Error lenght of side, side must be more than 0, Try again\n";
+            }
+        }
+        while(p_polygon[i].lenght_side < 0);
+        cout << "Amount of angles";
+        do{
+            cin >> p_polygon[i].amount_angles;
+            while (cin.fail()){
+                ignoreLine();
+                cout << "You have entered a character, please enter a number" << endl;
+                cin >> p_polygon[i].amount_angles;
+            }
+            if(p_polygon[i].amount_angles < 3){
+                cout<<"Amount of angles must be more than 2, Try again";
+            }
+        }
+        while(p_polygon[i].amount_angles < 3);
+        input_coordinates(current,amount_polygons,p_polygon);
+    }
+}
 
-int main()
-{
-    int n = 0;
-    figures *polygon = new figures[1];
+void output(int current,int amount_polygons,polygon *p_polygon){
+    if(amount_polygons == 0){
+        cout << "No polygons\n";
+    }
+    for(int i = 0; i < amount_polygons; ++i){
+        cout << "\n" << "Polygon:" << i + 1 << "\n";
+        cout << "Lenght of side=" << p_polygon[i].lenght_side << "\n";
+        cout << "Amount angles=" << p_polygon[i].amount_angles << "\n";
+        cout << "Perimeter of polygon=" << p_polygon[i].P << "\n";
+        cout << "Area of polygon=" << p_polygon[i].S << "\n";
+        double R;
+        double dxR;
+        double dyR;
+        double xR;
+        double yR;
+        double k;
+        double modx1 = fabs(p_polygon[i].x1);
+        double mody1 = fabs(p_polygon[i].y1);
+        int flagX = 1;
+        int flagY = 1;
+        if(p_polygon[i].x1 < 0){
+            flagX = -1;
+        }
+        if(p_polygon[i].y1 < 0){
+            flagY = -1;
+        }
+        R = p_polygon[i].lenght_side/(2*sin(M_PI/p_polygon[i].amount_angles));
+        k = atan((mody1) / (modx1));
+        dxR = R*cos(k);
+        dyR = R*sin(k);
+        xR = modx1 - dxR;
+        yR = mody1 - dyR;
+        double angle = 2*M_PI / p_polygon[i].amount_angles;
+        cout << "Coordinates of polygon: " << i + 1 << "\n";
+        cout << "Vertex 1: " << p_polygon[i].x1 << ";" << p_polygon[i].y1 << "\n";
+        for(int j = 1;j < p_polygon[i].amount_angles; ++j){
+            if(flagX != flagY){
+                double NewAngle = ((atan(mody1/modx1)) - (j)*angle);
+                double Next_X = xR + R*cos(NewAngle);
+                double Next_Y = yR + R*sin(NewAngle);
+                cout << "Vertex" << 1 + j << ": " << Next_X*flagX << ";" << Next_Y*flagY << "\n";
+            }
+            else{
+                double NewAngle = atan(mody1 / modx1) + (j)*angle;
+                double Next_X = xR + R*cos(NewAngle);
+                double Next_Y = yR + R*sin(NewAngle);
+                cout << "Vertex" << 1 + j << ": " << Next_X*flagX << ";" << Next_Y*flagY << "\n";
+            }
+        }
+    }
+}
 
-    int choose, it = 1;
-    while(it == 1){
-    cout << "choose your option:" << endl;
-    cout << "1 - input new information about a polygon" << endl;
-    cout << "2 - look through the information" << endl;
-    cout << "3 - delete information about a polygon" << endl;
-    cout << "4 - define maximal square or perimetr" << endl;
-    cout << "5 - quit" << endl;
-    choose = getInput();
-    newpage();
-    switch(choose){
-    case 1:
-        input(polygon, n);
-        break;
-    case 2:
-        output(polygon, n);
-        break;
-    case 3:
-        deletefigure(polygon, n);
-        break;
-    case 4:
-        menu2(polygon, n);
-        break;
-    case 5:
-        cout << "are you sure? (1 - yes, 2 - no)" << endl;
-        int choose1;
-        choose1 = getInput();
-        newpage();
-        switch(choose1){
+void P(int amount_polygons,polygon *p_polygon){
+    for(int i = 0; i < amount_polygons; ++i){
+        p_polygon[i].P = p_polygon[i].lenght_side*p_polygon[i].amount_angles;
+    }
+}
+
+void S(int amount_polygons,polygon* p_polygon){
+    for(int i = 0; i < amount_polygons; ++i){
+        if(p_polygon[i].amount_angles == 3){
+            p_polygon[i].S = sqrt(3) / 4*pow(p_polygon[i].lenght_side,2);
+        }
+        if(p_polygon[i].amount_angles == 4){
+            p_polygon[i].S = pow(p_polygon[i].lenght_side,2);
+        }
+        if(p_polygon[i].amount_angles>4){
+            p_polygon[i].S = p_polygon[i].amount_angles*pow(p_polygon[i].lenght_side,2) / (4*tan(M_PI/p_polygon[i].amount_angles));
+        }
+    }
+}
+
+void max_p_max_s(int amount_polygons,polygon *p_polygon,int p){
+    double max_value = 0;
+    int amount_max = 0;
+    int indexmax[amount_polygons];
+    double values[amount_polygons];
+    if(p == 1){
+        for(int i = 0; i < amount_polygons; ++i){
+            values[i] = p_polygon[i].P;
+        }
+    }
+    if(p == 0){
+        for(int i = 0; i < amount_polygons; ++i){
+            values[i] = p_polygon[i].S;
+        }
+    }
+    for(int i = 0; i < amount_polygons; ++i){
+        if(values[i] > max_value){
+            max_value = values[i];
+        }
+    }
+    for(int i = 0; i < amount_polygons; ++i){
+        if(values[i] == max_value){
+            indexmax[amount_max] = i;
+            amount_max++;
+        }
+    }
+    if((amount_max == 1) && (p == 1)){
+        cout << "Max perimeter= " << max_value << " and it is polygon " << indexmax[0] + 1 << "\n";
+    }
+    if((amount_max == 1) && (p == 0)){
+        cout << "Max area= " << max_value << " and it is polygon " << indexmax[0] + 1 << "\n";
+    }
+    if((amount_max > 1) && (p == 1)){
+        cout << "Max perimeter= " << max_value << " and they are polygons: ";
+        for(int i = 0; i < amount_max; ++i){
+            cout<<indexmax[i]+1<<"\n";
+        }
+    }
+    if((amount_max > 1) && (p == 0)){
+        cout << "Max area= " << max_value << " and they are polygons: ";
+        for(int i = 0; i < amount_max; ++i){
+            cout << indexmax[i] + 1 << "\n";
+        }
+    }
+}
+
+void delete_polygon(int& amount_polygons, polygon*& p_polygon){
+    if(amount_polygons == 0){
+        cout << "No polygons\n";
+        return;
+    }
+    int number_polygon;
+    cout << "Enter number of polygon: ";
+    cin >> number_polygon;
+    while (cin.fail()) {
+        ignoreLine();
+        cout << "You have entered a character, please enter a number" << endl;
+        cin >> number_polygon;
+    }
+    if (number_polygon < 1 || number_polygon > amount_polygons){
+        cout << "No polygon with this number\n";
+        return;
+    }
+    polygon* new_p_polygon = new polygon[amount_polygons - 1];
+    for (int i = 0; i < number_polygon - 1; ++i){
+        new_p_polygon[i] = p_polygon[i];
+    }
+    for (int i = number_polygon; i < amount_polygons; ++i){
+        new_p_polygon[i - 1] = p_polygon[i];
+    }
+    delete[] p_polygon;
+    p_polygon = new_p_polygon;
+    amount_polygons--;
+}
+
+void new_page(){
+    for(int i = 0; i < 100; ++i){
+        cout<<"\n";
+    }
+}
+
+void submenu(int amount_polygons,polygon *p_polygon){
+    int exit_sub = 0;
+    while(exit_sub == 0){
+        int choice_submenu;
+        cout << "1.Determine polygon with max square\n";
+        cout << "2.Determine polygon with max perimeter\n";
+        cout << "3.Return to previous menu\n";
+        cin >> choice_submenu;
+        while (cin.fail()) {
+            ignoreLine();
+            cout << "You have entered a character, please enter a number" << endl;
+            cin >> choice_submenu;
+        }
+        int p = 1;
+        switch(choice_submenu){
             case 1:
-                cout << "bye!" << endl;
-                delete [] polygon;
-                newpage();
-                it = 0;
+                new_page();
+                P(amount_polygons,p_polygon);
+                S(amount_polygons,p_polygon);
+                p = 0;
+                max_p_max_s(amount_polygons,p_polygon,p);
                 break;
             case 2:
-                it = 1;
-                break;
-            default:
-                cout << "error!!" << endl;
-                break;
-        }
-            break;
-        default:
-        cout << "error!!" << endl;
-        break;
-    }
-    //newpage();
-    }
-    return 0;
-}
-
-void menu2(figures *polygon, int n){
-    int it = 1;
-    while(it == 1){
-        newpage();
-        cout << "choose your option" << endl;
-        cout << "1 - define the polygon with maximal square" << endl;
-        cout << "2 - define the polygon with maximal perimetr" << endl;
-        cout << "3 - return to menu" << endl;
-        int choose2;
-        newpage();
-        choose2 = getInput();
-        switch(choose2){
-            case 1:
-                newpage();
-                maxPerSq(polygon, &n, 1);
-                break;
-            case 2:
-                newpage();
-                maxPerSq(polygon, &n, 2);
+                new_page();
+                P(amount_polygons,p_polygon);
+                S(amount_polygons,p_polygon);
+                p = 1;
+                max_p_max_s(amount_polygons,p_polygon,p);
                 break;
             case 3:
-                cout << "returning to menu" << endl;
-                newpage();
-                it = 1;
+                new_page();
+                exit_sub++;
                 break;
             default:
-                cout << "error!!" << endl;
-                break;
+            cout<<"Error";
         }
     }
+}
+
+void menu(int amount_polygons,polygon *p_polygon){
+    int exit = 0;
+    int current = 0;
+    while(exit == 0){
+        int choice;
+        cout << "MENU\n";
+        cout << "1.Input new polygon\n";
+        cout << "2.Output information about all polygons\n";
+        cout << "3.Delete polygon\n";
+        cout << "4.Submenu max square and max perimetr\n";
+        cout << "5.Exit\n";
+        cin >> choice;
+        while (cin.fail()){
+            ignoreLine();
+            cout << "You have entered a character, please enter a number" << endl;
+            cin >> choice;;
+        }
+        switch(choice){
+            case 1:
+                new_page();
+                current++;
+                input(current,amount_polygons,p_polygon);
+                break;
+            case 2:
+                new_page();
+                P(amount_polygons,p_polygon);
+                S(amount_polygons,p_polygon);
+                output(current,amount_polygons,p_polygon);
+                break;
+            case 3:
+                new_page();
+                delete_polygon(amount_polygons,p_polygon);
+                current--;
+                break;
+            case 4:
+                new_page();
+                submenu(amount_polygons,p_polygon);
+                break;
+            case 5:
+                new_page();
+                cout << "Are you sure to exit? If yes press 1 if no press 2\n";
+                int choice_exit;
+                cin >> choice_exit;
+                if(choice_exit == 1){
+                    exit++;
+                }
+                if(choice_exit == 2){
+                new_page();
+                menu(amount_polygons,p_polygon);
+                }
+                break;
+            default:
+            cout << "Error\n";
+        }
+    }
+}
+int main(){
+    int amount_polygons = 0;
+    polygon *p_polygon = NULL;
+    menu(amount_polygons,p_polygon);
+    delete[] p_polygon;
 }
